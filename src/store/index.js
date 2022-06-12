@@ -1,37 +1,38 @@
-import { legacy_createStore as createStore } from "redux";
-export const INCREASE = "INCREASE";
-export const INCREMENT = "INCREMENT";
-export const DECREMENT = "DECREMENT";
-export const TOGGLE = "TOGGLE";
+// import { legacy_createStore as createStore } from "redux";
+import { createSlice, configureStore } from "@reduxjs/toolkit";
 
-const counterReducer = (state = { counter: 0, showCounter: false }, action) => {
-  if (action.type === INCREMENT) {
-    return {
-      showCounter: state.showCounter,
-      counter: state.counter + 1,
-    };
-  }
-  if (action.type === DECREMENT) {
-    return {
-      showCounter: state.showCounter,
-      counter: state.counter - 1,
-    };
-  }
-  if (action.type === INCREASE) {
-    return {
-      showCounter: state.showCounter,
-      counter: state.counter + action.amount,
-    };
-  }
-  if (action.type === TOGGLE) {
-    return {
-      showCounter: !state.showCounter,
-      counter: state.counter,
-    };
-  }
-  return state;
-};
+const initialState = { counter: 0, showCounter: false };
 
-const store = createStore(counterReducer);
+const counterSlice = createSlice({
+  name: "counter",
+  initialState,
+  reducers: {
+    increment(state) {
+      state.counter++;
+    },
+    decrement(state) {
+      state.counter--;
+    },
+    increase(state, action) {
+      state.counter += action.payload;
+    },
+    toggle(state) {
+      state.showCounter = !state.showCounter;
+    },
+  },
+});
+
+export const counterActions = counterSlice.actions;
+
+// if we have one reducer
+// const store = createStore(counterSlice.reducer);
+
+// if we have many reducers
+const store = configureStore({
+  reducer: {
+    counter: counterSlice.reducer,
+    // auth: authSlice.reducer
+  },
+});
 
 export default store;
